@@ -3,9 +3,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/sbrow/combin"
+	"github.com/sbrow/prob/combin"
 )
 
 func main() {
-	fmt.Println(combin.Substrings("abcde", 2, 3))
+	fmt.Println(combin.PermuteR("abcde", 2, 3))
 }

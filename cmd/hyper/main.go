@@ -5,7 +5,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/sbrow/combin/hyper"
+	"github.com/sbrow/prob/combin/hyper"
 )
 
 const (

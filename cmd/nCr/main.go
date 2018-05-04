@@ -1,8 +1,6 @@
 /*
 Command nCr prints the number of combinations when choosing r objects from n.
 
-imports http://godoc.org/github.com/sbrow/combin
-
 Example:
 	$ nCr 10 2
 	45
@@ -11,7 +9,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/sbrow/combin"
+	"github.com/sbrow/prob/combin"
 	"os"
 	"strconv"
 )
@@ -24,5 +22,5 @@ func main() {
 		r[i], _ = strconv.Atoi(num)
 	}
 	fmt.Println("nCr: ", combin.NCR(n, r...))
-	fmt.Println("nCr^r: ", combin.NCRr(n, r...))
+	fmt.Println("nCr^r: ", combin.NCRR(n, r...))
 }

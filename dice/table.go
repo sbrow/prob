@@ -1,31 +1,29 @@
-// Package rolltable enumerates dice probability tables and saves them in csv format.
-//
-// See https://godoc.org/github.com/sbrow/rolltable/cmd/rolltable for the command.
-package rolltable
+package dice
 
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/sbrow/dice"
 	"go/build"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 )
 
 // DataDir is the folder in which roll tables will be generated.
 var DataDir string = build.Default.GOPATH + "/data/"
 
-// Generate creates the roll table for a single roll of n dice, and saves it in a csv file.
+// Table loads the roll table for a single roll of n dice.
 //
-// Generate does not generate fresh data if called on a table that has
+// Table does not generate fresh data if called on a table that has
 // already been generated,
 //
-// Generate loads previously generated data when appropriate. However, it
+// Table loads previously generated data when appropriate. However, it
 // cannot tell if data in a file is incomplete. Care must be taken not to feed it
 // incomplete tables, as this will cause undesirable results (but will not throw an error).
 //
 // TODO: Verify loaded data.
-func Generate(die dice.Die, n int) [][]string {
+func Table(die Die, n int) [][]string {
 	c := make([]<-chan state, len(die.Sides))
 	d := 0
 
@@ -77,7 +75,7 @@ func Generate(die dice.Die, n int) [][]string {
 	}
 	w := csv.NewWriter(file)
 	out := [][]string{}
-	w.Write([]string{"state", "Sum"})
+	w.Write([]string{"State", "Sum"})
 	for i := range c {
 		tmp := []string{}
 		for elem := range c[i] {
@@ -124,9 +122,9 @@ func rollDie(in <-chan state, n int, j int, name string) <-chan state {
 	return out
 }
 
-// removeData deletes generated data. Called by -force flag.
+// DeleteTables deletes generated data. Called by -force flag.
 // if print is true, the names of files we're deleting are output to the console
-func DeleteAll(print bool) {
+func DeleteTables(print bool) {
 	if print {
 		fmt.Println("Removing old data...")
 	}
@@ -144,4 +142,62 @@ func DeleteAll(print bool) {
 		}
 		os.RemoveAll(filepath.Join(DataDir, file))
 	}
+}
+
+// Delim is the delimiter that separates dice in a roll.
+const Delim = "+"
+
+// state is the current state of a number of dice that have been rolled.
+// Current is the state of dice that have already been rolled.
+// Next is the possibility space of the next die to be rolled.
+type state struct {
+	Current string
+	Next    Die
+}
+
+// Sum calculates the sum of *state.current.
+func (s *state) Sum() int {
+	sum := 0
+	vals := strings.Split(s.Current, Delim)
+	for _, char := range vals {
+		dieVal, _ := strconv.Atoi(char)
+		sum += dieVal
+	}
+	return sum
+}
+
+// String represents the state as a string.
+func (s *state) String() string {
+	return fmt.Sprintf("%s,%d", s.Current, s.Sum())
+}
+
+// CSV Formats state for writing to a csv file.
+func (s *state) CSV() []string {
+	return []string{s.Current, strconv.Itoa(s.Sum())}
+}
+
+// statesToChan makes a channel from given States
+//
+// Deprecated:
+func statesToChan(states ...state) <-chan state {
+	out := make(chan state)
+	go func() {
+		for _, s := range states {
+			out <- s
+		}
+		close(out)
+	}()
+	return out
+}
+
+// readState loads States from a csv file into a channel.
+func readState(strs [][]string, die Die) <-chan state {
+	out := make(chan state)
+	go func() {
+		for _, s := range strs {
+			out <- state{Current: s[0], Next: die}
+		}
+		close(out)
+	}()
+	return out
 }

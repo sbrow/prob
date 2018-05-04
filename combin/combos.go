@@ -1,9 +1,6 @@
 package combin
 
-import (
-	"github.com/sbrow/ranges"
-	"sync"
-)
+import "sync"
 
 /*
 PermuteR returns all permutions, (with repetition) of the characters in set
@@ -14,7 +11,7 @@ Output from PermuteR will always match the Regexp "/[set]+/"
 func PermuteR(set string, min, max int) (combos []string) {
 	c := make(chan string)
 	var wg sync.WaitGroup
-	combos = make([]string, NPRR(len(set), ranges.Enum(min, max)...))
+	combos = make([]string, NPRR(len(set), rng(min, max)...))
 
 	go func(c chan string) {
 		defer wg.Done()
@@ -30,6 +27,22 @@ func PermuteR(set string, min, max int) (combos []string) {
 		i++
 	}
 	return combos
+}
+
+func rng(low, high int) (arr []int) {
+	switch {
+	case low == high:
+		arr = []int{low}
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		arr = make([]int, high-low+1)
+		for i := 0; low <= high; low++ {
+			arr[i], i = low, i+1
+		}
+	}
+	return arr
 }
 
 /*

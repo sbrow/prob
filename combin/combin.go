@@ -9,10 +9,10 @@ type combin struct {
 	denom int
 }
 
-/*func combin(n, r int) (c combin) {
-	return combin{numer: []int{n, n - r + 1}, denom: r}
+func Combin(n, r int) *combin {
+	return &combin{[]int{n, n - r + 1}, r}
 }
-*/
+
 func (c *combin) String() string {
 	return fmt.Sprintf("(%d...%d) / %d!", c.numer[0], c.numer[1], c.denom)
 }
@@ -36,10 +36,3 @@ func (c *combin) Mult(mult ...combin) (prod int) {
 	}
 	return prod
 }
-
-/*func (c *combin) Mult(mult combin) (prod combin) {
-prod = combin{
-	numer: []int{c.numer[0], mult.numer[1]},
-	denom: c.denom}
-return prod}
-*/

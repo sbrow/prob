@@ -18,8 +18,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sbrow/dice"
-	"github.com/sbrow/rolltable"
+	"github.com/sbrow/prob/dice"
 	"strconv"
 )
 
@@ -31,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	if *force {
-		rolltable.DeleteAll(false)
+		dice.DeleteTables(false)
 	}
-	rolltable.Generate(*dice.New(fmt.Sprintf("d%d", *d), strconv.Itoa(*d)), *n)
+	dice.Table(*dice.New(fmt.Sprintf("d%d", *d), strconv.Itoa(*d)), *n)
 }

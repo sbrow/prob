@@ -4,11 +4,11 @@ are useful for computing the probability of random draws with removal, such as
 drawing cards from a deck.
 
 */
-package hyper // import "github.com/sbrow/combin/hyper"
+package hyper
 
 import (
 	"fmt"
-	"github.com/sbrow/combin"
+	"github.com/sbrow/prob/combin"
 )
 
 /*
