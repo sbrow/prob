@@ -2,13 +2,27 @@ package dice
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 )
+
+func Roll(dice ...Die) string {
+	roll := ""
+	for _, d := range dice {
+		roll += d.Roll() + Delim
+	}
+	return roll[:len(roll)-1]
+}
 
 // die represents a physical n-sided die.
 type Die struct {
 	Name  string
 	Sides []string
+}
+
+// Roll Simulates rolling the die, returning one of its sides at random.
+func (d *Die) Roll() string {
+	return d.Sides[rand.Intn(len(d.Sides))]
 }
 
 // A standard, four-sided die.
