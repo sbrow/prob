@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// Roll returns a random roll of the given dice.
 func Roll(dice ...Die) string {
 	roll := ""
 	for _, d := range dice {
@@ -14,7 +15,7 @@ func Roll(dice ...Die) string {
 	return roll[:len(roll)-1]
 }
 
-// die represents a physical n-sided die.
+// Die represents a physical n-sided die.
 type Die struct {
 	Name  string
 	Sides []string
@@ -25,32 +26,32 @@ func (d *Die) Roll() string {
 	return d.Sides[rand.Intn(len(d.Sides))]
 }
 
-// A standard, four-sided die.
+// D4 is a standard, four-sided die.
 func D4() Die {
 	return Die{Name: "d4", Sides: rng(1, 4)}
 }
 
-// A standard, six-sided die.
+// D6 is a standard, six-sided die.
 func D6() Die {
 	return Die{Name: "d6", Sides: rng(1, 6)}
 }
 
-// A standard, eight-sided die.
+// D8 is a standard, eight-sided die.
 func D8() Die {
 	return Die{Name: "d8", Sides: rng(1, 8)}
 }
 
-// A standard, eight-sided die.
+// D10 is a standard, eight-sided die.
 func D10() Die {
 	return Die{Name: "d10", Sides: rng(1, 10)}
 }
 
-// A standard, twelve-sided die.
+// D12 is a standard, twelve-sided die.
 func D12() Die {
 	return Die{Name: "d12", Sides: rng(1, 12)}
 }
 
-// A standard, twenty-sided die.
+// D20 is a standard, twenty-sided die.
 func D20() Die {
 	return Die{Name: "d20", Sides: rng(1, 20)}
 }

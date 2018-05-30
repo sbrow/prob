@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"go/build"
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -11,7 +12,7 @@ import (
 )
 
 // DataDir is the folder in which roll tables will be generated.
-var DataDir string = build.Default.GOPATH + "/data/"
+var DataDir = filepath.Join(build.Default.GOPATH, "data/")
 
 // Table loads the roll table for a single roll of n dice.
 //
@@ -25,7 +26,7 @@ var DataDir string = build.Default.GOPATH + "/data/"
 // TODO: Verify loaded data.
 func Table(die Die, n int) [][]string {
 	c := make([]<-chan state, len(die.Sides))
-	d := 0
+	var d int
 
 	// If the table already exists, stop executing.
 	f, err := os.Open(filepath.Join(DataDir, fmt.Sprintf("%v%v.csv", n, die.Name)))
@@ -75,11 +76,16 @@ func Table(die Die, n int) [][]string {
 	}
 	w := csv.NewWriter(file)
 	out := [][]string{}
-	w.Write([]string{"State", "Sum"})
+	if err := w.Write([]string{"State", "Sum"}); err != nil {
+		log.Println("error:", err)
+	}
 	for i := range c {
 		tmp := []string{}
 		for elem := range c[i] {
-			w.Write(elem.CSV())
+			if err := w.Write(elem.CSV()); err != nil {
+				log.Println(err)
+				continue
+			}
 			tmp = append(tmp, elem.CSV()...)
 		}
 		out = append(out, tmp)
@@ -98,7 +104,9 @@ func rollDie(in <-chan state, n int, j int, name string) <-chan state {
 
 	go func() {
 		// Set up our folders, files, and Writers.
-		os.Mkdir(folder, 0700)
+		if err := os.Mkdir(folder, 0700); err != nil {
+			panic(err)
+		}
 		file, err := os.Create(filepath.Join(folder, fmt.Sprintf("%v.csv", j+1)))
 		if err != nil {
 			panic(err)
@@ -113,7 +121,9 @@ func rollDie(in <-chan state, n int, j int, name string) <-chan state {
 					Next:    r.Next,
 				}
 				out <- rNew
-				w.Write(rNew.CSV())
+				if err := w.Write(rNew.CSV()); err != nil {
+					log.Println(err)
+				}
 			}
 			w.Flush()
 		}
@@ -140,7 +150,9 @@ func DeleteTables(print bool) {
 		if print {
 			fmt.Println("Deleting", filepath.Join(DataDir, file))
 		}
-		os.RemoveAll(filepath.Join(DataDir, file))
+		if err := os.RemoveAll(filepath.Join(DataDir, file)); err != nil {
+			log.Println(err)
+		}
 	}
 }
 
