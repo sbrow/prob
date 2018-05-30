@@ -1,9 +1,6 @@
 package combin
 
-import (
-	"math"
-	"sync"
-)
+import "math"
 
 /*
 NCR returns the number of combinations when choosing r objects from n
@@ -131,36 +128,6 @@ func SumFunc(k, n int, f func(int, ...int) int, params ...int) (sum int) {
 		sum += f(i, params...)
 	}
 	return sum
-}
-
-/*
-PartFactMult calculates the product of all numbers between n and lim using two
-goroutines.
-
-Deprecated: Slow
-*/
-func productMult(n, lim int) (pfact int) {
-	var wg sync.WaitGroup
-	wg.Add(2)
-	m := (n - lim) / 2
-	a := n
-	b := m
-
-	go func() {
-		defer wg.Done()
-		for i := n - 1; i > m; i-- {
-			a *= i
-		}
-	}()
-	go func() {
-		defer wg.Done()
-		for j := m; j >= lim; j-- {
-			b *= m
-		}
-	}()
-	wg.Wait()
-
-	return a * b
 }
 
 /*

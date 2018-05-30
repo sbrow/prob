@@ -1,10 +1,23 @@
 package combin
 
-import (
-	"fmt"
-	"testing"
-)
+import "fmt"
 
+func ExampleCombineSets() {
+	// Make all the combinations of a with c and d,
+	// plus all the combinations of b with c and d.
+	left, right := "ab", "cd"
+	fmt.Println(CombineSets(left, right))
+	// Output:
+	// [[a c] [a d] [b c] [b d]]
+}
+
+func ExamplePermuteR() {
+	// Print all permutations of 'a' and 'b'
+	// with length between one and two, (using repetition).
+	fmt.Println(PermuteR("ab", 1, 2))
+	// Output:
+	// [a aa ab b ba bb]
+}
 func ExampleNPR() {
 	n := 10
 	r := []int{1, 2, 3}
@@ -44,25 +57,4 @@ func ExampleSumFunc() {
 	fmt.Println(SumFunc(i, n, fib, n))
 	// Output:
 	// 55
-}
-
-/*
-Tests the speed of Product function implementations.
-*/
-func BenchmarkProduct(b *testing.B) {
-	low, high := 1, 100
-
-	b.ResetTimer()
-	b.Run("Single", func(b *testing.B) {
-		for n := 0; n < b.N; n++ {
-			Product(low, high)
-		}
-	})
-
-	b.ResetTimer()
-	b.Run("Multi", func(b *testing.B) {
-		for n := 0; n < b.N; n++ {
-			productMult(low, high)
-		}
-	})
 }
