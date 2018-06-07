@@ -8,4 +8,4 @@ install:
 script:
   - PATH="$HOME/gopath/bin:$PATH"
   - go test ./... -v -covermode=count -coverprofile=cover.out
-  - goveralls cover.out
+  - goveralls -coverprofile cover.out -service=travis-ci -repotoken $TOKEN
