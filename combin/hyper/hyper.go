@@ -44,8 +44,7 @@ the hyper.
 TODO: change to use maps.
 */
 func (h *Hyper) Sample(dist ...int) (results string) {
-	results = fmt.Sprintln(h.String())
-	results += fmt.Sprintln("X = ", dist)
+	results = fmt.Sprintln(h.String(), "\n", "X = ", dist)
 	results += fmt.Sprintf("P(X = x) = %f", h.PMF(dist))
 	return results
 }
@@ -59,9 +58,13 @@ func (h *Hyper) PMF(dist []int) float64 {
 	k := 1
 	for _, K := range h.K {
 		n += dist[i]
-		k *= combin.NCR(K, dist[i])
+		k *= combin.NCR(false, K, dist[i])
 		i++
 	}
-	total := combin.Combin(h.N(), n)
-	return float64(k) / total.Float64()
+
+	// TODO Clean up.
+	return float64(k) /
+		(float64(combin.Product(h.N()-n+1, h.N())) /
+			float64(combin.Fact(n)))
+
 }

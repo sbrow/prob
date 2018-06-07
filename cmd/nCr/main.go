@@ -9,18 +9,25 @@ package main
 
 import (
 	"fmt"
-	"github.com/sbrow/prob/combin"
 	"os"
 	"strconv"
+
+	"github.com/sbrow/prob/combin"
 )
 
 func main() {
 	args := os.Args[1:]
-	n, _ := strconv.Atoi(args[0])
+	n, err := strconv.Atoi(args[0])
+	if err != nil {
+		panic(err)
+	}
 	r := make([]int, len(args[1:]))
 	for i, num := range args[1:] {
-		r[i], _ = strconv.Atoi(num)
+		r[i], err = strconv.Atoi(num)
+		if err != nil {
+			panic(err)
+		}
 	}
-	fmt.Println("nCr: ", combin.NCR(n, r...))
-	fmt.Println("nCr^r: ", combin.NCRR(n, r...))
+	fmt.Println("nCr: ", combin.NCR(false, n, r...))
+	fmt.Println("nCr^r: ", combin.NCR(true, n, r...))
 }

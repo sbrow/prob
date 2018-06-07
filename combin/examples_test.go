@@ -18,14 +18,14 @@ func ExamplePermuteR() {
 	// Output:
 	// [a aa ab b ba bb]
 }
-func ExampleNPR() {
+func ExampleNPR_noRepitition() {
 	n := 10
 	r := []int{1, 2, 3}
-	fmt.Println(NPR(n, r...))
+	fmt.Println(NPR(false, n, r...))
 
 	sum := 0
 	for i := 1; i <= 3; i++ {
-		sum += NPR(n, i)
+		sum += NPR(false, n, i)
 	}
 	fmt.Println(sum)
 	//Output:
@@ -33,14 +33,14 @@ func ExampleNPR() {
 	//820
 }
 
-func ExampleNPRR() {
+func ExampleNPR_repitition() {
 	n := 10
 	r := []int{1, 2, 3}
-	fmt.Println(NPRR(n, r...))
+	fmt.Println(NPR(true, n, r...))
 
 	sum := 0
 	for i := 1; i <= 3; i++ {
-		sum += NPRR(n, i)
+		sum += NPR(true, n, i)
 	}
 	fmt.Println(sum)
 	//Output:
@@ -51,7 +51,7 @@ func ExampleNPRR() {
 func ExampleSumFunc() {
 	// Calculate the 10th fibbonacci number using SumFunc.
 	fib := func(i int, n ...int) int {
-		return NCR(n[0]-i-1, i)
+		return NCR(false, n[0]-i-1, i)
 	}
 	n := 10
 	fmt.Println(SumFunc(0, n, fib, n))

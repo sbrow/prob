@@ -59,3 +59,58 @@ func TestCombineSets(t *testing.T) {
 		})
 	}
 }
+
+func ncr1(rep bool, n int, r ...int) int {
+	if n <= 0 {
+		return 0
+	}
+	combos := 0
+	var a, b int
+
+	for _, k := range r {
+		if rep {
+			a = n
+			b = n + k - 1
+		} else {
+			a = n - k + 1
+			b = n
+		}
+		combos += Product(a, b) / Fact(k)
+	}
+	return combos
+}
+
+func ncr3(rep bool, n int, r ...int) int {
+	if n <= 0 {
+		return 0
+	}
+
+	combos := 0
+	if rep {
+		for _, k := range r {
+			combos += Product(n, n+k-1) / Fact(k)
+		}
+	} else {
+		for _, k := range r {
+			combos += Product(n-k+1, n) / Fact(k)
+		}
+	}
+	return combos
+}
+
+func ncr4(rep bool, n int, r ...int) int {
+	combos := 0
+	if n <= 0 {
+		return 0
+	}
+	if rep {
+		for _, k := range r {
+			combos += Product(n, n+k-1) / Fact(k)
+		}
+	} else {
+		for _, k := range r {
+			combos += Product(n-k+1, n) / Fact(k)
+		}
+	}
+	return combos
+}
