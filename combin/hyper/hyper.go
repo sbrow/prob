@@ -8,6 +8,7 @@ package hyper
 
 import (
 	"fmt"
+
 	"github.com/sbrow/prob/combin"
 )
 
@@ -44,7 +45,7 @@ TODO: change to use maps.
 */
 func (h *Hyper) Sample(dist ...int) (results string) {
 	results = fmt.Sprintln(h.String())
-	results += fmt.Sprintln("X = ", dist, "\n")
+	results += fmt.Sprintln("X = ", dist)
 	results += fmt.Sprintf("P(X = x) = %f", h.PMF(dist))
 	return results
 }

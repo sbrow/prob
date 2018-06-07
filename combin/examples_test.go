@@ -50,11 +50,11 @@ func ExampleNPRR() {
 
 func ExampleSumFunc() {
 	// Calculate the 10th fibbonacci number using SumFunc.
-	i, n := 0, 10
 	fib := func(i int, n ...int) int {
 		return NCR(n[0]-i-1, i)
 	}
-	fmt.Println(SumFunc(i, n, fib, n))
+	n := 10
+	fmt.Println(SumFunc(0, n, fib, n))
 	// Output:
 	// 55
 }

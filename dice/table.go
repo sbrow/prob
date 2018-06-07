@@ -105,7 +105,7 @@ func rollDie(in <-chan state, n int, j int, name string) <-chan state {
 	go func() {
 		// Set up our folders, files, and Writers.
 		if err := os.Mkdir(folder, 0700); err != nil {
-			panic(err)
+			// panic(err)
 		}
 		file, err := os.Create(filepath.Join(folder, fmt.Sprintf("%v.csv", j+1)))
 		if err != nil {
