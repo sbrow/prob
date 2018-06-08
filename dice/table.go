@@ -14,6 +14,13 @@ import (
 // DataDir is the folder in which roll tables will be generated.
 var DataDir = filepath.Join(build.Default.GOPATH, "data/")
 
+func init() {
+	_, err := os.Open(DataDir)
+	if os.IsNotExist(err) {
+		os.MkdirAll(DataDir, 0777)
+	}
+}
+
 // Table loads the roll table for a single roll of n dice.
 //
 // Table does not generate fresh data if called on a table that has
@@ -139,7 +146,11 @@ func DeleteTables(print bool) {
 		fmt.Println("Removing old data...")
 	}
 	data, err := os.Open(DataDir)
-	if err != nil {
+	if os.IsNotExist(err) {
+		os.MkdirAll(DataDir, 0777)
+		DeleteTables(print)
+		return
+	} else if err != nil {
 		panic(err)
 	}
 	contents, err := data.Readdirnames(-1)
