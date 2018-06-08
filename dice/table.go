@@ -66,7 +66,7 @@ func Table(die Die, n int) [][]string {
 			if err != nil {
 				panic(err)
 			}
-			c[i] = readState(r, die)
+			c[i] = readState(r[1:], die)
 		}
 	}
 
@@ -81,8 +81,8 @@ func Table(die Die, n int) [][]string {
 	if err != nil {
 		panic(err)
 	}
-	w := csv.NewWriter(file)
 	out := [][]string{}
+	w := csv.NewWriter(file)
 	if err := w.Write([]string{"State", "Sum"}); err != nil {
 		log.Println("error:", err)
 	}
@@ -98,7 +98,7 @@ func Table(die Die, n int) [][]string {
 		out = append(out, tmp)
 		w.Flush()
 	}
-	return out
+	return append([][]string{{"State", "Sum"}}, out...)
 }
 
 // rollDie is a pipeline function that takes a node on a roll tree and generates
@@ -111,14 +111,21 @@ func rollDie(in <-chan state, n int, j int, name string) <-chan state {
 
 	go func() {
 		// Set up our folders, files, and Writers.
-		if err := os.Mkdir(folder, 0700); err != nil {
-			// panic(err)
+		switch err := os.Mkdir(folder, 0700); {
+		case os.IsExist(err):
+			fallthrough
+		case err == nil:
+		default:
+			panic(err)
 		}
 		file, err := os.Create(filepath.Join(folder, fmt.Sprintf("%v.csv", j+1)))
 		if err != nil {
 			panic(err)
 		}
 		w := csv.NewWriter(file)
+		if err := w.Write([]string{"State", "Sum"}); err != nil {
+			log.Println("error:", err)
+		}
 
 		//Parse and write input
 		for r := range in {
@@ -183,7 +190,10 @@ func (s *state) Sum() int {
 	sum := 0
 	vals := strings.Split(s.Current, Delim)
 	for _, char := range vals {
-		dieVal, _ := strconv.Atoi(char)
+		dieVal, err := strconv.Atoi(char)
+		if err != nil {
+			continue
+		}
 		sum += dieVal
 	}
 	return sum
