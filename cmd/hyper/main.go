@@ -21,5 +21,5 @@ func main() {
 		"k1": Spells,
 	}
 	h := hyper.Hyper{K: deck}
-	fmt.Println(h.Sample(3, 4))
+	fmt.Println(h.Sample(map[string]int{"Lands": 3, "Spells": 4}))
 }
