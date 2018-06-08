@@ -5,9 +5,7 @@ import (
 	"testing"
 )
 
-/*
-Tests the speed of Product function implementations.
-*/
+// Tests the speed of Product function implementations.
 func BenchmarkProduct(b *testing.B) {
 	low, high := 1, 100
 
@@ -33,7 +31,7 @@ func TestPermuteR(t *testing.T) {
 
 func TestCombine(t *testing.T) {
 	want := [][]string{{"a", "b"}, {"a", "c"}, {"b", "c"}}
-	got := Combine("a", "b", "c")
+	got := NewSet("a", "b", "c").Combine()
 	if fmt.Sprint(got) != fmt.Sprint(want) {
 		t.Fatalf("wanted: %s\ngot: %s", want, got)
 	}
@@ -44,19 +42,32 @@ var combineSetTests = []struct {
 	right interface{}
 	out   string
 }{
-	{"ab", "cd", "[[a c] [a d] [b c] [b d]]"},
-	{"cd", []string{"e", "f"}, "[[c e] [c f] [d e] [d f]]"},
-	{"ab", 1, "[[a 1] [b 1]]"},
+	{[]string{"a", "b"}, []string{"c", "d"}, "[[a c] [a d] [b c] [b d]]"},
+	// {[]byte{99, 100}, []string{"e", "f"}, "[[c e] [c f] [d e] [d f]]"},
+	{[]string{"a", "b"}, 1, "[[a 1] [b 1]]"},
 }
 
 func TestCombineSets(t *testing.T) {
 	for _, tt := range combineSetTests {
 		t.Run(fmt.Sprintf("%s %s", tt.left, tt.right), func(t *testing.T) {
-			got := CombineSets(tt.left, tt.right)
+			got := CombineSets(NewSet(tt.left), NewSet(tt.right))
 			if fmt.Sprint(got) != tt.out {
 				t.Errorf("wanted: %s\ngot: %v", tt.out, got)
 			}
 		})
+	}
+}
+
+func TestRNG(t *testing.T) {
+	want := []int{3}
+	got := rng(3, 3)
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("wanted: %v\ngot: %v\n", want, got)
+	}
+	want = []int{2, 3, 4}
+	got = rng(4, 2)
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("wanted: %v\ngot: %v\n", want, got)
 	}
 }
 

@@ -7,8 +7,6 @@ drawing cards from a deck.
 package hyper
 
 import (
-	"fmt"
-
 	"github.com/sbrow/prob/combin"
 )
 
@@ -18,16 +16,6 @@ different 'successes' that a sample can have.
 */
 type Hyper struct {
 	K map[string]int
-}
-
-// String returns the distribution as a string, printing h.K and h.N().
-func (h *Hyper) String() string {
-	K := "{"
-	for k, v := range h.K {
-		K += fmt.Sprintf(" %s:%d,", k, v)
-	}
-	K = K[:len(K)-1] + " }"
-	return fmt.Sprintf("K = %s, N = %d", K, h.N())
 }
 
 // N returns the population size of the distribution.
@@ -43,22 +31,20 @@ Sample computes the probability of drawing a certain sample distribution from
 the hyper.
 TODO: change to use maps.
 */
-func (h *Hyper) Sample(dist ...int) (results string) {
-	results = fmt.Sprintln(h.String(), "\n", "X = ", dist)
-	results += fmt.Sprintf("P(X = x) = %f", h.PMF(dist))
-	return results
+func (h *Hyper) Sample(items map[string]int) Result {
+	return Result{Dist: h.K, Sample: items, PMF: h.PMF(items)}
 }
 
 /*
 PMF calculates the probability mass function of the distribution, i.e. the
 probability of drawing this exact distribution.
 */
-func (h *Hyper) PMF(dist []int) float64 {
+func (h *Hyper) PMF(items map[string]int) float64 {
 	n, i := 0, 0
 	k := 1
-	for _, K := range h.K {
-		n += dist[i]
-		k *= combin.NCR(false, K, dist[i])
+	for key, K := range h.K {
+		n += items[key]
+		k *= combin.NCR(false, K, items[key])
 		i++
 	}
 
@@ -67,4 +53,10 @@ func (h *Hyper) PMF(dist []int) float64 {
 		(float64(combin.Product(h.N()-n+1, h.N())) /
 			float64(combin.Fact(n)))
 
+}
+
+type Result struct {
+	Dist   map[string]int
+	Sample map[string]int
+	PMF    float64
 }

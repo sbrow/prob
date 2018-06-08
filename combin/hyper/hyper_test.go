@@ -7,16 +7,27 @@ import (
 
 func ExampleHyper_PMF() {
 	dist := Hyper{map[string]int{"A": 2, "B": 2}}
-	fmt.Printf("%f\n", dist.PMF([]int{1, 1}))
+	fmt.Printf("%f\n", dist.PMF(map[string]int{"A": 1, "B": 1}))
 	// Output:0.666667
 }
 
-func TestHyper_PMF(t *testing.T) {
-	const OUT = "0.226082"
-	dist := &Hyper{map[string]int{"Lands": 17, "Spells": 23}}
-	output := fmt.Sprintf("%.6f", dist.PMF([]int{4, 3}))
-	if output != OUT {
-		fmt.Println("got: ", output)
-		fmt.Println("want: ", OUT)
+var sampletests = []struct {
+	sample map[string]int
+	out    string
+}{
+	{map[string]int{"A": 2, "B": 0}, "0.16667"},
+	{map[string]int{"A": 0, "B": 2}, "0.16667"},
+	{map[string]int{"A": 1, "B": 1}, "0.66667"},
+}
+
+func TestHyperSample(t *testing.T) {
+	dist := Hyper{map[string]int{"A": 2, "B": 2}}
+	for _, tt := range sampletests {
+		t.Run(fmt.Sprint(tt.sample), func(t *testing.T) {
+			got := dist.Sample(tt.sample).PMF
+			if fmt.Sprintf("%.5f", got) != tt.out {
+				t.Errorf("wanted: %s\ngot: %.5f\n", tt.out, got)
+			}
+		})
 	}
 }

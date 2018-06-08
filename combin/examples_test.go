@@ -5,7 +5,7 @@ import "fmt"
 func ExampleCombineSets() {
 	// Make all the combinations of a with c and d,
 	// plus all the combinations of b with c and d.
-	left, right := "ab", "cd"
+	left, right := NewSet("a", "b"), NewSet("c", "d")
 	fmt.Println(CombineSets(left, right))
 	// Output:
 	// [[a c] [a d] [b c] [b d]]
