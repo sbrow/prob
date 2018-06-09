@@ -1,2 +1,10 @@
 
 *.out
+
+\.directory
+
+*.prof
+
+*.sublime-project
+
+*.sublime-workspace
