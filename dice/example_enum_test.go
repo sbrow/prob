@@ -7,8 +7,8 @@ import (
 )
 
 func Example_enumeration() {
-	dice := dice.New(dice.D4(), dice.D4())
-	table, err := dice.NewTable(dice)
+	d := dice.New(dice.D4(), dice.D4())
+	table, err := dice.NewTable(d)
 	if err != nil {
 		panic(err)
 	}
