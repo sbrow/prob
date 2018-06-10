@@ -17,9 +17,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
+
 	"github.com/sbrow/prob/dice"
-	"strconv"
 )
 
 func main() {
@@ -30,7 +29,8 @@ func main() {
 	flag.Parse()
 
 	if *force {
-		dice.DeleteTables(false)
+		dice.DeleteData()
 	}
-	dice.Table(*dice.New(fmt.Sprintf("d%d", *d), strconv.Itoa(*d)), *n)
+
+	dice.NewTable([]dice.Die{dice.D6(), dice.D6()})
 }
