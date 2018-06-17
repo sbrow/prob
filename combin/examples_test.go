@@ -2,6 +2,20 @@ package combin
 
 import "fmt"
 
+func ExampleNCR_repitition() {
+	n := 10
+	r := []int{1, 2, 3}
+	fmt.Println(NCR(true, n, r...))
+
+	sum := 0
+	for i := 1; i <= 3; i++ {
+		sum += NCR(true, n, i)
+	}
+	fmt.Println(sum)
+	// Output:
+	// 285
+	// 285
+}
 func ExampleCombineSets() {
 	// Make all the combinations of a with c and d,
 	// plus all the combinations of b with c and d.
