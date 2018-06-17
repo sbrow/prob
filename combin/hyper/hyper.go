@@ -1,51 +1,40 @@
-/*
-Package hyper creates hypergeometric distributions. Hypergeometric distributions
-are useful for computing the probability of random draws with removal, such as
-drawing cards from a deck.
-
-*/
+// Package hyper creates hypergeometric distributions. Hypergeometric distributions
+// are useful for computing the probability of random draws with removal, such as
+// drawing cards from a deck.
 package hyper
 
-import (
-	"github.com/sbrow/prob/combin"
-)
+import "github.com/sbrow/prob/combin"
 
-/*
-Hyper represents a hypergeometric distribution where k is an array of
-different 'successes' that a sample can have.
-*/
+// Hyper represents a hypergeometric distribution where k is an array of
+// different 'successes' that a sample can have.
 type Hyper struct {
 	K map[string]int
 }
 
 // N returns the population size of the distribution.
-func (h *Hyper) N() (N int) {
+func (h *Hyper) N() int {
+	size := 0
 	for _, k := range h.K {
-		N += k
+		size += k
 	}
-	return N
+	return size
 }
 
-/*
-Sample computes the probability of drawing a certain sample distribution from
-the hyper.
-TODO: change to use maps.
-*/
-func (h *Hyper) Sample(items map[string]int) Result {
+// Sample computes the probability of drawing a certain sample distribution from
+// the hyper.
+// TODO: change to use maps.
+func (h Hyper) Sample(items map[string]int) Result {
 	return Result{Dist: h.K, Sample: items, PMF: h.PMF(items)}
 }
 
-/*
-PMF calculates the probability mass function of the distribution, i.e. the
-probability of drawing this exact distribution.
-*/
-func (h *Hyper) PMF(items map[string]int) float64 {
-	n, i := 0, 0
+// PMF calculates the probability mass function of the distribution, i.e. the
+// probability of drawing this exact distribution.
+func (h Hyper) PMF(items map[string]int) float64 {
+	n := 0
 	k := 1
-	for key, K := range h.K {
+	for key, value := range h.K {
 		n += items[key]
-		k *= combin.NCR(false, K, items[key])
-		i++
+		k *= combin.NCR(false, value, items[key])
 	}
 
 	// TODO Clean up.
@@ -55,6 +44,7 @@ func (h *Hyper) PMF(items map[string]int) float64 {
 
 }
 
+// Result is the results returned by Hyper.Sample.
 type Result struct {
 	Dist   map[string]int
 	Sample map[string]int

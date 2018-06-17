@@ -5,12 +5,6 @@ import (
 	"testing"
 )
 
-func ExampleHyper_PMF() {
-	dist := Hyper{map[string]int{"A": 2, "B": 2}}
-	fmt.Printf("%f\n", dist.PMF(map[string]int{"A": 1, "B": 1}))
-	// Output:0.666667
-}
-
 var sampletests = []struct {
 	sample map[string]int
 	out    string

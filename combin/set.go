@@ -8,14 +8,14 @@
 // 	https://github.com/sbrow/combin/blob/master/LICENSE
 package combin
 
-import (
-	"reflect"
-)
+import "reflect"
 
+// Set represents a set of items that can be combined.
 type Set struct {
 	Elements []interface{}
 }
 
+// NewSet creates a new set from the given items.
 func NewSet(v ...interface{}) *Set {
 	set := &Set{Elements: []interface{}{}}
 	for i := range v {
@@ -43,11 +43,13 @@ func (s *Set) Combine() [][2]interface{} {
 	return combos
 }
 
-func CombineSets(s, ss *Set) [][]interface{} {
+// CombineSets returns all combinations (without replacement)
+// of the items in set a with the items in set b.
+func CombineSets(a, b *Set) [][]interface{} {
 	combos := [][]interface{}{}
-	for _, a := range s.Elements {
-		for _, b := range ss.Elements {
-			combos = append(combos, []interface{}{a, b})
+	for _, aa := range a.Elements {
+		for _, bb := range b.Elements {
+			combos = append(combos, []interface{}{aa, bb})
 		}
 	}
 	return combos

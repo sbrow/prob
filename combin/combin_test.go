@@ -71,6 +71,7 @@ func TestRNG(t *testing.T) {
 	}
 }
 
+/*
 func ncr1(rep bool, n int, r ...int) int {
 	if n <= 0 {
 		return 0
@@ -125,3 +126,4 @@ func ncr4(rep bool, n int, r ...int) int {
 	}
 	return combos
 }
+*/
