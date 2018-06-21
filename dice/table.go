@@ -91,7 +91,7 @@ main:
 }
 
 // Name returns the name of the table, which is determined by its Dice.
-func (t Table) Name() string {
+func (t *Table) Name() string {
 	return t.Dice.Name()
 }
 
@@ -182,7 +182,7 @@ func loadTable(dice Dice) (*Table, error) {
 	return t, nil
 }
 
-func (t Table) save() error {
+func (t *Table) save() error {
 	f, err := os.Create(filepath.Join(DataDir, t.Name()+".csv"))
 	if err != nil {
 		return err

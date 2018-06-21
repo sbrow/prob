@@ -16,8 +16,8 @@ type Set struct {
 }
 
 // NewSet creates a new set from the given items.
-func NewSet(v ...interface{}) *Set {
-	set := &Set{Elements: []interface{}{}}
+func NewSet(v ...interface{}) Set {
+	set := Set{Elements: []interface{}{}}
 	for i := range v {
 		val := reflect.ValueOf(v[i])
 		if val.Kind() == reflect.Slice || val.Kind() == reflect.Array {
@@ -32,7 +32,7 @@ func NewSet(v ...interface{}) *Set {
 }
 
 // Combine returns all combinations of the given set with itself.
-func (s *Set) Combine() [][2]interface{} {
+func (s Set) Combine() [][2]interface{} {
 	combos := [][2]interface{}{}
 	v := s.Elements
 	for i := 0; i < len(v)-1; i++ {
@@ -45,7 +45,7 @@ func (s *Set) Combine() [][2]interface{} {
 
 // CombineSets returns all combinations (without replacement)
 // of the items in set a with the items in set b.
-func CombineSets(a, b *Set) [][]interface{} {
+func CombineSets(a, b Set) [][]interface{} {
 	combos := [][]interface{}{}
 	for _, aa := range a.Elements {
 		for _, bb := range b.Elements {

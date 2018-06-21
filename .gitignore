@@ -1,12 +1,12 @@
-
-*.out
-
 \.directory
 
 *.prof
+*.test
+*.out
 
 *.sublime-project
 
 *.sublime-workspace
+*.code-workspace
 
 \.vscode/

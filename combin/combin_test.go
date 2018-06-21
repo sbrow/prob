@@ -149,3 +149,87 @@ func BenchmarkProduct(b *testing.B) {
 		}
 	})
 }
+
+func rng2(low, high int) []int {
+	var arr []int
+	switch {
+	case low == high:
+		return []int{low}
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		for i := low; i <= high; i++ {
+			arr = append(arr, i)
+		}
+	}
+	return arr
+}
+
+func rng3(low, high int) []int {
+	var arr [1]int
+	var b []int = arr[:]
+	switch {
+	case low == high:
+		b[0] = low
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		// arr = make([]int, high-low+1)
+		for i := 0; low <= high; low++ {
+			b[i] = low
+			i++
+		}
+	}
+	return b
+}
+
+func rng4(low, high int) []int {
+	var arr []int
+	switch {
+	case low == high:
+		arr = make([]int, 1)
+		arr[0] = low
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		arr = make([]int, high-low+1)
+		for i := 0; low <= high; low++ {
+			arr[i] = low
+			i++
+		}
+	}
+	return arr
+}
+
+func BenchmarkRNG(b *testing.B) {
+	var a []int
+	m := 0
+	b.Run("rng", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng(0, m)
+		}
+	})
+	b.Run("rng2", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng2(0, m)
+		}
+	})
+	b.Run("rng3", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng3(0, m)
+		}
+	})
+	b.Run("rng4", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng4(0, m)
+		}
+	})
+	fmt.Sprint(a)
+}
