@@ -1,3 +1,5 @@
+//go:generate sh -c "godoc2md -template ../.doc.template github.com/sbrow/prob/dice > README.md"
+
 /*
 Package dice provides functions for simulating and analyzing dice probabilities.
 
@@ -17,7 +19,5 @@ Enumeration
 
 If you wish to determine exact results of a die roll, you can enumerate a roll table
 by calling NewTable(DiceToRoll).
-
-TODO: Add Table.Verify()
 */
 package dice

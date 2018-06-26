@@ -5,12 +5,13 @@ import "fmt"
 func ExampleDelim() {
 	Delim = "+"
 	dice := Dice{D6(), D6()}
-	fmt.Println(Roll(dice...))
+	fmt.Println(dice.Roll())
 	// Output: [6 6]
 }
 
-func ExampleRoll() {
-	fmt.Println(Roll(D6(), D6()))
+func ExampleDice_Roll() {
+	d := Dice{D6(), D6()}
+	fmt.Println(d.Roll())
 	// Output: [2 1]
 }
 

@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 )
 
 // DataDir is the default directory to store Tables in.
@@ -19,10 +18,7 @@ var Delim = "+"
 
 // DeleteData deletes the contents of DataDir.
 func DeleteData() error {
-	var err error
-
-	var dir *os.File
-	dir, err = os.Open(DataDir)
+	dir, err := os.Open(DataDir)
 	switch {
 	case os.IsNotExist(err):
 		makeDataDir()
@@ -31,13 +27,14 @@ func DeleteData() error {
 		return err
 	}
 
-	var files []string
-	if files, err = dir.Readdirnames(-1); err != nil {
+	files, err := dir.Readdirnames(-1)
+	if err != nil {
 		return err
 	}
+	dir.Close()
 
 	for _, file := range files {
-		if err = os.RemoveAll(filepath.Join(DataDir, file)); err != nil {
+		if err := os.RemoveAll(filepath.Join(DataDir, file)); err != nil {
 			log.Println(err)
 		}
 	}
@@ -45,9 +42,14 @@ func DeleteData() error {
 }
 
 // Table holds a roll table for a set of dice.
+//
+// TODO(sbrow): Add Table.Verify
+//
+// BUG(sbrow): Add Table.Verify
+//
 type Table struct {
-	Dice Dice       // The Dice in the table.
-	Data [][]string // The possibility space of the dice when each is rolled once.
+	Dice         // The Dice in the table.
+	Rolls []roll // The possibility space of the dice when each is rolled once.
 }
 
 // NewTable returns a dice table from the given dice.
@@ -86,7 +88,7 @@ main:
 	if t, err = generateTable(t, dice[i:]); err != nil {
 		return nil, err
 	}
-	t.save()
+	t.Save()
 	return t, nil
 }
 
@@ -99,7 +101,7 @@ func (t *Table) Name() string {
 // die rolls and the next die to roll.
 func generateRoll(prev bytes.Buffer, d Die) bytes.Buffer {
 	var err error
-	var line []byte
+	// var line []byte
 	var out bytes.Buffer
 
 	del := []byte(Delim)
@@ -107,13 +109,12 @@ func generateRoll(prev bytes.Buffer, d Die) bytes.Buffer {
 
 	for err != io.EOF {
 		// Read a line.
-		line, err = prev.ReadBytes('\n')
+		line, err := prev.ReadBytes('\n')
 		if err == io.EOF && length > 0 {
 			break
 		}
 		for _, s := range d.Sides {
-			// Only add the delimiter if
-			// there is previous data to append.
+			// Only add the delimiter if there is previous data to append.
 			if len(line) > 1 {
 				out.Write(line[:len(line)-1])
 				out.Write(del)
@@ -127,27 +128,33 @@ func generateRoll(prev bytes.Buffer, d Die) bytes.Buffer {
 
 // generateTable generates a Table from Dice.
 //
-// TODO: Add concurrency.
+// TODO(sbrow): Add concurrency.
 func generateTable(t *Table, dice Dice) (*Table, error) {
 	var rolls bytes.Buffer
+
 	if t != nil {
-		for _, line := range t.Data {
-			rolls.WriteString(line[0])
+		for _, roll := range t.Rolls {
+			rolls.WriteString(roll.String())
 			rolls.WriteByte('\n')
 		}
-	} else {
-		t = &Table{}
 	}
+
 	for _, d := range dice {
 		rolls = generateRoll(rolls, d)
 	}
+
 	data, err := csv.NewReader(&rolls).ReadAll()
 	if err != nil {
 		return nil, err
 	}
-
 	sort.Strings(data[0])
-	t = &Table{Data: data, Dice: append(t.Dice, dice...)}
+
+	t = &Table{}
+	t.Rolls = make([]roll, len(data))
+	for i, line := range data {
+		t.Rolls[i] = roll(line)
+	}
+	t.Dice = append(t.Dice, dice...)
 	return t, nil
 }
 
@@ -160,36 +167,41 @@ func makeDataDir() {
 // loadTable loads a table from generated data. If the table does not exist,
 // os.IsNotExist is returned.
 func loadTable(dice Dice) (*Table, error) {
-	var err error
-
 	t := &Table{Dice: dice}
 
 	// Start by making sure the data folder exists.
 	makeDataDir()
 
 	// Check to see if this table has been saved.
-	var f *os.File
-	if f, err = os.Open(filepath.Join(DataDir, t.Name()+".csv")); err != nil {
+	f, err := os.Open(filepath.Join(DataDir, t.Name()+".csv"))
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	// If it has, load its data.
+	data, err := csv.NewReader(f).ReadAll()
+	if err != nil {
 		return nil, err
 	}
 
-	// If it has, load its data.
-	var data [][]string
-	if data, err = csv.NewReader(f).ReadAll(); err != nil {
-		return nil, err
+	t.Rolls = make([]roll, len(data))
+
+	for i, line := range data {
+		t.Rolls[i] = roll(line)
 	}
-	t.Data = data
 	return t, nil
 }
 
-func (t *Table) save() error {
+// Save writes the table to disk in csv format.
+func (t *Table) Save() error {
 	f, err := os.Create(filepath.Join(DataDir, t.Name()+".csv"))
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	for _, line := range t.Data {
-		f.WriteString(strings.Join(line, ","))
+	for _, roll := range t.Rolls {
+		f.WriteString(roll.String())
 		f.Write([]byte{'\n'})
 	}
 	return nil

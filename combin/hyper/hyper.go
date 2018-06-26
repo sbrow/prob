@@ -22,7 +22,7 @@ func (h *Hyper) N() int {
 
 // Sample computes the probability of drawing a certain sample distribution from
 // the hyper.
-// TODO: change to use maps.
+// TODO(sbrow): change to use maps.
 func (h Hyper) Sample(items map[string]int) Result {
 	return Result{Dist: h.K, Sample: items, PMF: h.PMF(items)}
 }

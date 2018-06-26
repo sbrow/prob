@@ -17,7 +17,7 @@ func BenchmarkGenTable(b *testing.B) {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				t.save()
+				t.Save()
 			}()
 		}
 		wg.Wait()
@@ -32,7 +32,7 @@ func BenchmarkGenTable(b *testing.B) {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				t.save()
+				t.Save()
 			}()
 		}
 		wg.Wait()

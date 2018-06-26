@@ -168,7 +168,7 @@ func rng2(low, high int) []int {
 
 func rng3(low, high int) []int {
 	var arr [1]int
-	var b []int = arr[:]
+	var b = arr[:]
 	switch {
 	case low == high:
 		b[0] = low
@@ -176,7 +176,6 @@ func rng3(low, high int) []int {
 		low, high = high, low
 		fallthrough
 	case low < high:
-		// arr = make([]int, high-low+1)
 		for i := 0; low <= high; low++ {
 			b[i] = low
 			i++
@@ -231,5 +230,5 @@ func BenchmarkRNG(b *testing.B) {
 			a = rng4(0, m)
 		}
 	})
-	fmt.Sprint(a)
+	_ = fmt.Sprint(a)
 }

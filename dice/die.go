@@ -1,19 +1,32 @@
 package dice
 
 import (
+	"bytes"
 	"fmt"
 	"math/rand"
 	"sort"
+	"strconv"
 	"strings"
 )
 
-// Roll returns a random side from each of the given dice.
-func Roll(dice ...Die) []string {
-	out := make([]string, len(dice))
-	for i, d := range dice {
-		out[i] = d.Roll()
+// // Roll returns a random side from each of the given dice.
+// func Roll(dice ...Die) []string {
+// 	out := make([]string, len(dice))
+// 	for i, d := range dice {
+// 		out[i] = d.Roll()
+// 	}
+// 	return out
+// }
+
+// Copy returns n copies of Die d.
+func Copy(d Die, n int) Dice {
+	dice := make([]Die, n)
+
+	for i := 0; i < n; i++ {
+		dice[i] = d
 	}
-	return out
+
+	return dice
 }
 
 // Dice is a collection of 0 or more Die structs.
@@ -123,4 +136,30 @@ func NewDie(name string, sides ...string) *Die {
 // Roll returns a side of the Die at random.
 func (d Die) Roll() string {
 	return d.Sides[rand.Intn(6)]
+}
+
+type roll []string
+
+func (r roll) String() string {
+	var b bytes.Buffer
+	for i, s := range r {
+		b.WriteString(s)
+		if i+1 < len(r) {
+			b.WriteString(s)
+		}
+	}
+	return b.String()
+}
+
+// Sum returns the sum of the roll. Dice with non-integer values count as 0.
+func (r roll) Sum() int {
+	sum := 0
+
+	for _, s := range r {
+		n, err := strconv.Atoi(s)
+		if err == nil {
+			sum += n
+		}
+	}
+	return sum
 }

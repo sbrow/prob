@@ -156,7 +156,7 @@ func BenchmarkGenRoll(b *testing.B) {
 			for _, elem := range data {
 				buff.Write(elem)
 			}
-			out := generateRoll(buff, d6)
+			out := generateRoll6(buff, d6)
 			_ = bytes.Split(out.Bytes(), []byte{'\n'})
 		}
 	})
