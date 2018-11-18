@@ -38,3 +38,21 @@ func Example_monteCarlo() {
 	// 5: 1680
 	// 6: 1680
 }
+
+func Example_monteCarloMany() {
+	// Roll a die 10,000 times.
+	size := 10
+	results := make([]map[string]int, size)
+	for i := 0; i < size; i++ {
+		results[i] = MonteCarlo(10000)
+	}
+	fmt.Println(results)
+	math.std
+	// Output:
+	// 1: 1677
+	// 2: 1631
+	// 3: 1665
+	// 4: 1667
+	// 5: 1680
+	// 6: 1680
+}

@@ -17,20 +17,13 @@
 
 
 ## <a name="pkg-installation">Installation</a>
-```bash
-go get -u {{ .ImportPath }}
+```sh
+$ go get -u {{ .ImportPath }}
 ```
-
 <!---
 {{if $.Examples}}
 #### <a name="pkg-examples">Examples</a>{{- range $.Examples}}
-* [{{example_name .Name}}](#example_{{.Name}}){{- end}}{{- end}}
-
-## Examples
-{{ range $.Examples }}
-### {{ .Name }}
-{{ .Doc }}
-{{end}}
+* [{{example_name .Name}}](example_{{.Name}}_test.go){{- end}}{{- end}}
 {{end}}
 --->
 
@@ -39,18 +32,6 @@ go get -u {{ .ImportPath }}
 ## <a name="pkg-note-{{$marker}}">{{$marker}}</a>
 {{ range $key, $value := .}}
 `{{ $value.UID }}:` {{ $value.Body }}{{end}}{{end}}{{end}}
-
-{{with $.Notes}}
-{{range $marker, $content := .}}
-<!--- ## <a name="pkg-note-{{$marker}}">{{noteTitle $marker | html}} --->
-## <a name="pkg-note-{{$marker}}">{{noteTitle $marker}}
-<ul style="list-style: none; padding: 0;">
-{{range .}}
-<li><a href="{{posLink_url $ .}}">&#x261e;</a> {{html .Body}}</li>
-{{end}}
-</ul>
-{{end}}
-{{end}}
 ## <a name="pkg-doc">Documentation</a>
 For full Documentation please visit https://godoc.org/{{.ImportPath}}
 - - -

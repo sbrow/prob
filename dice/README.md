@@ -32,37 +32,17 @@ by calling NewTable(DiceToRoll).
 
 
 ## <a name="pkg-installation">Installation</a>
-```bash
-go get -u github.com/sbrow/prob/dice
+```sh
+$ go get -u github.com/sbrow/prob/dice
 ```
-
 <!---
 
 #### <a name="pkg-examples">Examples</a>
-* [Delim](#example_Delim)
-* [Dice.Name](#example_Dice_Name)
-* [Dice.Roll](#example_Dice_Roll)
-* [Package (Enumeration)](#example__enumeration)
-* [Package (MonteCarlo)](#example__monteCarlo)
-
-## Examples
-
-### Delim
-
-
-### Dice_Name
-
-
-### Dice_Roll
-
-
-### _enumeration
-
-
-### _monteCarlo
-main()
-
-
+* [Delim](example_Delim_test.go)
+* [Dice.Name](example_Dice_Name_test.go)
+* [Dice.Roll](example_Dice_Roll_test.go)
+* [Package (Enumeration)](example__enumeration_test.go)
+* [Package (MonteCarlo)](example__monteCarlo_test.go)
 
 --->
 
@@ -77,8 +57,6 @@ main()
 `sbrow:` Add Table.Verify
 
 `sbrow:` Add concurrency.
-
-
 
 ## <a name="pkg-doc">Documentation</a>
 For full Documentation please visit https://godoc.org/github.com/sbrow/prob/dice
