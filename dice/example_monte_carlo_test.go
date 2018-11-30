@@ -47,7 +47,6 @@ func Example_monteCarloMany() {
 		results[i] = MonteCarlo(10000)
 	}
 	fmt.Println(results)
-	math.std
 	// Output:
 	// 1: 1677
 	// 2: 1631
