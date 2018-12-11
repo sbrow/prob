@@ -3,29 +3,26 @@ package dice
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
 )
 
-var dicetests = []struct {
-	die   Die
-	name  string
-	sides []string
-}{
-	{*NewDie("D3", "1", "A", "3"), "D3", []string{"1", "A", "3"}},
-	{*NewDie("D4", "1", "2", "3", "4"), "D4", []string{"1", "2", "3", "4"}},
-	{D4(), "d4", []string{"1", "2", "3", "4"}},
-	{D6(), "d6", []string{"1", "2", "3", "4", "5", "6"}},
-	{D8(), "d8", []string{"1", "2", "3", "4", "5", "6", "7", "8"}},
-	{D10(), "d10", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}},
-	{D12(), "d12", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}},
-	{D20(), "d20", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
-		"13", "14", "15", "16", "17", "18", "19", "20"}},
-}
-
 func TestDice(t *testing.T) {
+	dicetests := []struct {
+		die   Die
+		name  string
+		sides []string
+	}{
+		{*NewDie("D3", "1", "A", "3"), "D3", []string{"1", "A", "3"}},
+		{*NewDie("D4", "1", "2", "3", "4"), "D4", []string{"1", "2", "3", "4"}},
+		{D4(), "d4", []string{"1", "2", "3", "4"}},
+		{D6(), "d6", []string{"1", "2", "3", "4", "5", "6"}},
+		{D8(), "d8", []string{"1", "2", "3", "4", "5", "6", "7", "8"}},
+		{D10(), "d10", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}},
+		{D12(), "d12", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}},
+		{D20(), "d20", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+			"13", "14", "15", "16", "17", "18", "19", "20"}},
+	}
 	for i, tt := range dicetests {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
 			want := tt.sides
@@ -37,17 +34,16 @@ func TestDice(t *testing.T) {
 	}
 }
 
-var nametests = []struct {
-	dice Dice
-	out  string
-}{
-	{Dice{D6(), D6(), D4()}, "2d6+1d4"},
-}
-
 func TestName(t *testing.T) {
-	for _, tt := range nametests {
+	tests := []struct {
+		dice Dice
+		out  string
+	}{
+		{Dice{D6(), D6(), D4()}, "2d6+1d4"},
+	}
+	for _, tt := range tests {
 		t.Run(tt.out, func(t *testing.T) {
-			got := Table{Dice: tt.dice}.Name()
+			got := (&Table{Dice: tt.dice}).Name()
 			if got != tt.out {
 				t.Errorf("wanted: %s\ngot: %s\n", tt.out, got)
 			}
@@ -133,6 +129,7 @@ func TestLoadTable(t *testing.T) {
 	}
 }
 
+/*
 func TestDeleteTables(t *testing.T) {
 	var err error
 	for i := 0; i < 3; i++ {
@@ -155,6 +152,7 @@ func TestDeleteTables(t *testing.T) {
 
 	}
 }
+*/
 
 var gentests = []struct {
 	roll [][]byte

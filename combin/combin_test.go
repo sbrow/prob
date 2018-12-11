@@ -5,24 +5,12 @@ import (
 	"testing"
 )
 
-// Tests the speed of Product function implementations.
-func BenchmarkProduct(b *testing.B) {
-	low, high := 1, 100
-
-	b.ResetTimer()
-	b.Run("Single", func(b *testing.B) {
-		for n := 0; n < b.N; n++ {
-			Product(low, high)
-		}
-	})
-}
-
 func TestPermuteR(t *testing.T) {
-	want := ("[" +
+	want := "[" +
 		"a aa aaa aab aac ab aba abb abc ac aca acb acc " +
 		"b ba baa bab bac bb bba bbb bbc bc bca bcb bcc " +
 		"c ca caa cab cac cb cba cbb cbc cc cca ccb ccc" +
-		"]")
+		"]"
 	got := fmt.Sprint(PermuteR("abc", 1, 3))
 	if want != got {
 		t.Fatalf("wanted: %s\ngot: %s", want, got)
@@ -30,27 +18,42 @@ func TestPermuteR(t *testing.T) {
 }
 
 func TestCombine(t *testing.T) {
-	want := [][]string{{"a", "b"}, {"a", "c"}, {"b", "c"}}
-	got := NewSet("a", "b", "c").Combine()
-	if fmt.Sprint(got) != fmt.Sprint(want) {
-		t.Fatalf("wanted: %s\ngot: %s", want, got)
+	tests := []struct {
+		name string
+		args *Set
+		want string
+	}{
+		{"a,b,c", NewSet("a", "b", "c"), "a,b\na,c\nb,c\n"},
+		{"{a,b}", NewSet([]string{"a", "b"}), ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Combine(false)
+			switch {
+			case got == nil && tt.want != "":
+				fallthrough
+			case got != nil && got.String() != tt.want:
+				t.Errorf("wanted: %s\ngot: %v", tt.want, got)
+			}
+		})
 	}
 }
 
-var combineSetTests = []struct {
-	left  interface{}
-	right interface{}
-	out   string
-}{
-	{[]string{"a", "b"}, []string{"c", "d"}, "[[a c] [a d] [b c] [b d]]"},
-	// {[]byte{99, 100}, []string{"e", "f"}, "[[c e] [c f] [d e] [d f]]"},
-	{[]string{"a", "b"}, 1, "[[a 1] [b 1]]"},
-}
-
 func TestCombineSets(t *testing.T) {
+	combineSetTests := []struct {
+		name  string
+		left  *Set
+		right *Set
+		out   string
+	}{
+		{"{a, b} X {c, d}", NewSet("a", "b"), NewSet("c", "d"), "a,c\na,d\nb,c\nb,d\n"},
+		{"{{a, b}} X {c}", NewSet([]string{"a", "b"}), NewSet("c"), "a,b,c\n"},
+		{"[]byte{c, d} X {e, f}", NewSet([]byte{99, 100}), NewSet("e", "f"), "99,100,e\n99,100,f\n"},
+		{"{a, b} X {1}", NewSet("a", "b"), NewSet(1), "a,1\nb,1\n"},
+	}
 	for _, tt := range combineSetTests {
-		t.Run(fmt.Sprintf("%s %s", tt.left, tt.right), func(t *testing.T) {
-			got := CombineSets(NewSet(tt.left), NewSet(tt.right))
+		t.Run(tt.name, func(t *testing.T) {
+			got := CombineSets(*tt.left, *tt.right)
 			if fmt.Sprint(got) != tt.out {
 				t.Errorf("wanted: %s\ngot: %v", tt.out, got)
 			}
@@ -71,6 +74,29 @@ func TestRNG(t *testing.T) {
 	}
 }
 
+func TestNPR(t *testing.T) {
+	type args struct {
+		rep bool
+		n   int
+		r   []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"n = -1", args{false, -1, []int{1}}, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NPR(tt.args.rep, tt.args.n, tt.args.r...); got != tt.want {
+				t.Errorf("NPR() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+/*
 func ncr1(rep bool, n int, r ...int) int {
 	if n <= 0 {
 		return 0
@@ -124,4 +150,101 @@ func ncr4(rep bool, n int, r ...int) int {
 		}
 	}
 	return combos
+}
+*/
+
+// Tests the speed of Product function implementations.
+func BenchmarkProduct(b *testing.B) {
+	low, high := 1, 100
+
+	b.ResetTimer()
+	b.Run("Single", func(b *testing.B) {
+		for n := 0; n < b.N; n++ {
+			Product(low, high)
+		}
+	})
+}
+
+func rng2(low, high int) []int {
+	var arr []int
+	switch {
+	case low == high:
+		return []int{low}
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		for i := low; i <= high; i++ {
+			arr = append(arr, i)
+		}
+	}
+	return arr
+}
+
+func rng3(low, high int) []int {
+	var arr [1]int
+	var b []int = arr[:]
+	switch {
+	case low == high:
+		b[0] = low
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		// arr = make([]int, high-low+1)
+		for i := 0; low <= high; low++ {
+			b[i] = low
+			i++
+		}
+	}
+	return b
+}
+
+func rng4(low, high int) []int {
+	var arr []int
+	switch {
+	case low == high:
+		arr = make([]int, 1)
+		arr[0] = low
+	case low > high:
+		low, high = high, low
+		fallthrough
+	case low < high:
+		arr = make([]int, high-low+1)
+		for i := 0; low <= high; low++ {
+			arr[i] = low
+			i++
+		}
+	}
+	return arr
+}
+
+func BenchmarkRNG(b *testing.B) {
+	var a []int
+	m := 0
+	b.Run("rng", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng(0, m)
+		}
+	})
+	b.Run("rng2", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng2(0, m)
+		}
+	})
+	b.Run("rng3", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng3(0, m)
+		}
+	})
+	b.Run("rng4", func(b *testing.B) {
+		b.ResetTimer()
+		for n := 0; n < b.N; n++ {
+			a = rng4(0, m)
+		}
+	})
+	fmt.Sprint(a)
 }

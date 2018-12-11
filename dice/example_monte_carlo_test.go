@@ -2,33 +2,39 @@ package dice_test
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/sbrow/prob/dice"
 )
 
 // Run a simulation n times.
-func MonteCarlo(n int) [6]int {
+func MonteCarlo(n int) map[string]int {
 	// The number of times each side was rolled
-	count := [6]int{0, 0, 0, 0, 0, 0}
+	counts := map[string]int{}
 	die := dice.D6()
 	var result string
 	for i := 0; i < n; i++ {
 		result = die.Roll()
-		intR, err := strconv.Atoi(result)
-		if err != nil {
-			panic(err)
-		}
-		count[intR-1]++
+		counts[result]++
 	}
-	return count
+	return counts
 }
 
 // main()
 func Example_monteCarlo() {
 	// Roll a die 10,000 times.
-	fmt.Println(MonteCarlo(10000))
+	results := MonteCarlo(10000)
+	fmt.Println("1:", results["1"])
+	fmt.Println("2:", results["2"])
+	fmt.Println("3:", results["3"])
+	fmt.Println("4:", results["4"])
+	fmt.Println("5:", results["5"])
+	fmt.Println("6:", results["6"])
 
 	// Output:
-	// [1678 1631 1666 1667 1680 1678]
+	// 1: 1678
+	// 2: 1631
+	// 3: 1666
+	// 4: 1667
+	// 5: 1680
+	// 6: 1678
 }
