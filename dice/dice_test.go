@@ -3,8 +3,6 @@ package dice
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"path/filepath"
 	"reflect"
 	"testing"
 )
@@ -45,7 +43,7 @@ func TestName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.out, func(t *testing.T) {
-			got := Table{Dice: tt.dice}.Name()
+			got := (&Table{Dice: tt.dice}).Name()
 			if got != tt.out {
 				t.Errorf("wanted: %s\ngot: %s\n", tt.out, got)
 			}
@@ -131,6 +129,7 @@ func TestLoadTable(t *testing.T) {
 	}
 }
 
+/*
 func TestDeleteTables(t *testing.T) {
 	var err error
 	for i := 0; i < 3; i++ {
@@ -153,6 +152,7 @@ func TestDeleteTables(t *testing.T) {
 
 	}
 }
+*/
 
 var gentests = []struct {
 	roll [][]byte
