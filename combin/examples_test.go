@@ -2,6 +2,29 @@ package combin
 
 import "fmt"
 
+func ExampleSet_Combine_noRepetition() {
+	set := NewSet("a", "b", "c")
+	fmt.Println(set.Combine(false))
+
+	//Output:
+	// a,b
+	// a,c
+	// b,c
+}
+
+func ExampleSet_Combine_repetition() {
+	set := NewSet("a", "b", "c")
+	fmt.Println(set.Combine(true))
+
+	//Output:
+	// a,a
+	// a,b
+	// a,c
+	// b,b
+	// b,c
+	// c,c
+}
+
 func ExampleNCR_repitition() {
 	n := 10
 	r := []int{1, 2, 3}
@@ -16,15 +39,49 @@ func ExampleNCR_repitition() {
 	// 285
 	// 285
 }
-func ExampleCombineSets() {
+func ExampleCombineSets_1() {
 	// Make all the combinations of a with c and d,
 	// plus all the combinations of b with c and d.
 	left, right := NewSet("a", "b"), NewSet("c", "d")
-	fmt.Println(CombineSets(left, right))
+	fmt.Println(CombineSets(*left, *right))
 	// Output:
-	// [[a c] [a d] [b c] [b d]]
+	// a,c
+	// a,d
+	// b,c
+	// b,d
+	//
 }
 
+func ExampleCombineSets_2() {
+	eleven := NewSet("A")
+	ten := NewSet("K", "Q", "J", "T").Combine(false)
+	hand := CombineSets(*eleven, *ten)
+	fmt.Println(hand)
+
+	// Output:
+	// A,K,Q
+	// A,K,J
+	// A,K,T
+	// A,Q,J
+	// A,Q,T
+	// A,J,T
+	//
+}
+
+func ExampleSet_Join() {
+	left, right := NewSet("a", "b"), NewSet("c", "d")
+	joined := left.Join(right)
+	fmt.Println(joined.Combine(false))
+
+	// Output:
+	// a,b
+	// a,c
+	// a,d
+	// b,c
+	// b,d
+	// c,d
+	//
+}
 func ExamplePermuteR() {
 	// Print all permutations of 'a' and 'b'
 	// with length between one and two, (using repetition).

@@ -18,27 +18,42 @@ func TestPermuteR(t *testing.T) {
 }
 
 func TestCombine(t *testing.T) {
-	want := [][]string{{"a", "b"}, {"a", "c"}, {"b", "c"}}
-	got := NewSet("a", "b", "c").Combine()
-	if fmt.Sprint(got) != fmt.Sprint(want) {
-		t.Fatalf("wanted: %s\ngot: %s", want, got)
+	tests := []struct {
+		name string
+		args *Set
+		want string
+	}{
+		{"a,b,c", NewSet("a", "b", "c"), "a,b\na,c\nb,c\n"},
+		{"{a,b}", NewSet([]string{"a", "b"}), ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Combine(false)
+			switch {
+			case got == nil && tt.want != "":
+				fallthrough
+			case got != nil && got.String() != tt.want:
+				t.Errorf("wanted: %s\ngot: %v", tt.want, got)
+			}
+		})
 	}
 }
 
 func TestCombineSets(t *testing.T) {
 	combineSetTests := []struct {
 		name  string
-		left  interface{}
-		right interface{}
+		left  *Set
+		right *Set
 		out   string
 	}{
-		{"{a, b} X {c, d}", []string{"a", "b"}, []string{"c", "d"}, "[[a c] [a d] [b c] [b d]]"},
-		// {"[]byte{c, d} X {e, f}", []byte{99, 100}, []string{"e", "f"}, "[[c e] [c f] [d e] [d f]]"},
-		{"{a, b} X {1}", []string{"a", "b"}, 1, "[[a 1] [b 1]]"},
+		{"{a, b} X {c, d}", NewSet("a", "b"), NewSet("c", "d"), "a,c\na,d\nb,c\nb,d\n"},
+		{"{{a, b}} X {c}", NewSet([]string{"a", "b"}), NewSet("c"), "a,b,c\n"},
+		{"[]byte{c, d} X {e, f}", NewSet([]byte{99, 100}), NewSet("e", "f"), "99,100,e\n99,100,f\n"},
+		{"{a, b} X {1}", NewSet("a", "b"), NewSet(1), "a,1\nb,1\n"},
 	}
 	for _, tt := range combineSetTests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CombineSets(NewSet(tt.left), NewSet(tt.right))
+			got := CombineSets(*tt.left, *tt.right)
 			if fmt.Sprint(got) != tt.out {
 				t.Errorf("wanted: %s\ngot: %v", tt.out, got)
 			}
