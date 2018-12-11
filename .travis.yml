@@ -1,7 +1,8 @@
 language: go
 
 install:
-  - go get -t ./...
+  # - go get -t ./...
+  - go mod download
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
 
