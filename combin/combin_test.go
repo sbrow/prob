@@ -24,7 +24,7 @@ func TestCombine(t *testing.T) {
 		want string
 	}{
 		{"a,b,c", NewSet("a", "b", "c"), "a,b\na,c\nb,c\n"},
-		{"{a,b}", NewSet([]string{"a", "b"}), ""},
+		{"{a,b}", NewSet([]string{"a", "b"}), "a,b\n"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -47,8 +47,8 @@ func TestCombineSets(t *testing.T) {
 		out   string
 	}{
 		{"{a, b} X {c, d}", NewSet("a", "b"), NewSet("c", "d"), "a,c\na,d\nb,c\nb,d\n"},
-		{"{{a, b}} X {c}", NewSet([]string{"a", "b"}), NewSet("c"), "a,b,c\n"},
-		{"[]byte{c, d} X {e, f}", NewSet([]byte{99, 100}), NewSet("e", "f"), "99,100,e\n99,100,f\n"},
+		{"{{a, b}} X {c}", NewSet([]string{"a", "b"}), NewSet("c"), "a,c\nb,c\n"},
+		{"[]byte{c, d} X {e, f}", NewSet([]byte{99, 100}), NewSet("e", "f"), "99,e\n99,f\n100,e\n100,f\n"},
 		{"{a, b} X {1}", NewSet("a", "b"), NewSet(1), "a,1\nb,1\n"},
 	}
 	for _, tt := range combineSetTests {

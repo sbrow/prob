@@ -10,7 +10,7 @@ func TestNewSet(t *testing.T) {
 		args []interface{}
 		want string
 	}{
-		{"{{a,b}}", []interface{}{[]string{"a", "b"}}, "a,b\n"},
+		{"{{a,b}}", []interface{}{[]string{"a", "b"}}, "a\nb\n"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

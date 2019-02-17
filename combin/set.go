@@ -5,7 +5,8 @@ import (
 	"reflect"
 )
 
-const Delim = ","
+// Delim
+var Delim = ","
 
 type Combo []interface{}
 
@@ -46,15 +47,24 @@ func NewSet(v ...interface{}) *Set {
 
 // Add ads a new object to the set.
 func (s *Set) Add(v interface{}) {
-	val := reflect.ValueOf(v)
-	if val.Kind() == reflect.Slice || val.Kind() == reflect.Array {
-		subset := make([]interface{}, val.Len())
-		for i := 0; i < val.Len(); i++ {
-			subset[i] = val.Index(i)
+	switch v.(type) {
+	case *Set:
+		s.Add(*v.(*Set))
+	case []Combo:
+		s.Add(v.(Set))
+	case Set:
+		*s = append(*s, v.(Set)...)
+	default:
+		val := reflect.ValueOf(v)
+		if val.Kind() == reflect.Slice || val.Kind() == reflect.Array {
+			subset := make([]Combo, val.Len())
+			for i := 0; i < val.Len(); i++ {
+				subset[i] = []interface{}{val.Index(i)} //.Interface().(Combo)
+			}
+			*s = append(*s, subset...)
+		} else {
+			*s = append(*s, []interface{}{val})
 		}
-		*s = append(*s, subset)
-	} else {
-		*s = append(*s, []interface{}{val})
 	}
 }
 
@@ -119,10 +129,42 @@ func CombineSets(a, b Set) *Set {
 	return &s
 }
 
+// PermuteRSets returns all permutations (with replacement)
+// of the items in set a with the items in set b.
+func PermuteRSets(a, b Set) *Set {
+	combos := make([]Combo, a.Size()*b.Size())
+	i := 0
+	for _, aa := range a {
+		for _, bb := range b {
+			combos[i] = []interface{}{aa, bb}
+			i++
+
+		}
+	}
+	for _, bb := range b {
+		for _, aa := range a {
+			if !reflect.DeepEqual(bb, aa) {
+				combos = append(combos, []interface{}{bb, aa})
+			}
+		}
+	}
+
+	s := Set(combos)
+	return &s
+}
+
 func (s *Set) String() string {
 	str := ""
 	for _, v := range *s {
 		str += fmt.Sprintln(v)
 	}
 	return str
+}
+
+func (s *Set) Interface() []interface{} {
+	out := make([]interface{}, s.Size())
+	for i, v := range *s {
+		out[i] = v
+	}
+	return out
 }

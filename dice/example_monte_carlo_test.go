@@ -1,34 +1,12 @@
-package dice_test
+package dice
 
-import (
-	"fmt"
-
-	"github.com/sbrow/prob/dice"
-)
-
-// Run a simulation n times.
-func MonteCarlo(n int) map[string]int {
-	// The number of times each side was rolled
-	counts := map[string]int{}
-	die := dice.D6()
-	var result string
-	for i := 0; i < n; i++ {
-		result = die.Roll()
-		counts[result]++
-	}
-	return counts
-}
-
-// main()
+/*
 func Example_monteCarlo() {
 	// Roll a die 10,000 times.
-	results := MonteCarlo(10000)
-	fmt.Println("1:", results["1"])
-	fmt.Println("2:", results["2"])
-	fmt.Println("3:", results["3"])
-	fmt.Println("4:", results["4"])
-	fmt.Println("5:", results["5"])
-	fmt.Println("6:", results["6"])
+	n := 10000
+	d := Copy(new(D6), 2)
+	results := MonteCarlo(d, Average, 3, n)
+	fmt.Println(results)
 
 	// Output:
 	// 1: 1677
@@ -37,6 +15,26 @@ func Example_monteCarlo() {
 	// 4: 1667
 	// 5: 1680
 	// 6: 1680
+}
+*/
+
+/*
+func Example_monteCarloWithReroll() {
+	rand.Seed(time.Now().UTC().UnixNano())
+	// Roll a die 10,000 times.
+	results := MonteCarlo(D6(), Average, 10, 1000000)
+	max := len(D6().Sides())
+	for i := 0; i < max; i++ {
+		fmt.Printf("%d: %d\n", i+1, results[i])
+	}
+
+	// Output:
+	// 1: 1678
+	// 2: 1620
+	// 3: 1674
+	// 4: 1646
+	// 5: 1689
+	// 6: 1693
 }
 
 func Example_monteCarloMany() {
@@ -55,3 +53,4 @@ func Example_monteCarloMany() {
 	// 5: 1680
 	// 6: 1680
 }
+*/

@@ -1,7 +1,6 @@
 package dice
 
-import "fmt"
-
+/*
 func ExampleDelim() {
 	Delim = "+"
 	dice := Dice{D6(), D6()}
@@ -20,3 +19,4 @@ func ExampleDice_Name() {
 	fmt.Print(dice.Name())
 	// Output: 2d6+2d4+1d8+1d10
 }
+*/

@@ -1,40 +1,37 @@
 package dice
 
-import (
-	"bytes"
-	"fmt"
-	"os"
-	"path/filepath"
-	"reflect"
-	"testing"
-)
-
+/*
 func TestDice(t *testing.T) {
 	dicetests := []struct {
 		die   Die
 		name  string
 		sides []string
 	}{
-		{*NewDie("D3", "1", "A", "3"), "D3", []string{"1", "A", "3"}},
-		{*NewDie("D4", "1", "2", "3", "4"), "D4", []string{"1", "2", "3", "4"}},
+		// {NewDie("D3", "1", "A", "3"), "D3", []string{"1", "A", "3"}},
+		// {NewDie("D4", "1", "2", "3", "4"), "D4", []string{"1", "2", "3", "4"}},
 		{D4(), "d4", []string{"1", "2", "3", "4"}},
 		{D6(), "d6", []string{"1", "2", "3", "4", "5", "6"}},
 		{D8(), "d8", []string{"1", "2", "3", "4", "5", "6", "7", "8"}},
 		{D10(), "d10", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}},
+		{TensD10(), "10sd10", []string{"0", "10", "20", "30", "40", "50", "60", "70", "80", "90"}},
 		{D12(), "d12", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}},
 		{D20(), "d20", []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 			"13", "14", "15", "16", "17", "18", "19", "20"}},
 	}
-	for i, tt := range dicetests {
-		t.Run(fmt.Sprint(i), func(t *testing.T) {
+	for _, tt := range dicetests {
+		t.Run(tt.name, func(t *testing.T) {
 			want := tt.sides
-			got := tt.die.Sides
+			got := make([]string, len(tt.sides))
+			for i, s := range tt.die.Sides() {
+				got[i] = s.String()
+			}
 			if !reflect.DeepEqual(got, want) {
 				t.Errorf("wanted: %s\ngot: %s\n", want, got)
 			}
 		})
 	}
 }
+
 
 func TestName(t *testing.T) {
 	tests := []struct {
@@ -61,15 +58,16 @@ func TestName(t *testing.T) {
 	}
 }
 
+
 func TestRollSum(t *testing.T) {
 	tests := []struct {
 		name string
-		r    roll
+		r    RolledDice
 		want int
 	}{
-		{"1+1", []string{"1", "1"}, 2},
-		{"3+5", []string{"3", "5"}, 8},
-		{"5+5", []string{"6", "6"}, 12},
+		{"1+1", []RolledDie{{D6(), 1}, {D6(), 1}}, 2},
+		{"3+5", []RolledDie{{D6(), 3}, {D6(), 5}}, 8},
+		{"5+5", []RolledDie{{D6(), 6}, {D6(), 6}}, 12},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -79,7 +77,8 @@ func TestRollSum(t *testing.T) {
 		})
 	}
 }
-
+*/
+/*
 var tabletests = []struct {
 	in   *Table
 	dice Dice
@@ -186,6 +185,7 @@ func TestDeleteTables(t *testing.T) {
 	}
 }
 
+
 var gentests = []struct {
 	roll [][]byte
 	die  Die
@@ -210,11 +210,15 @@ func TestGenRoll(t *testing.T) {
 		})
 	}
 }
-
+*/
+/*
 func TestDiceRoll(t *testing.T) {
 	want := []string{"6", "4"}
 	dice := New(D6(), D6())
-	got := dice.Roll()
+	got := make([]string, 2)
+	for i, roll := range dice.Roll() {
+		got[i] = roll.String()
+	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("wanted: %s\ngot: %s\n", want, got)
 	}
@@ -243,3 +247,43 @@ func TestDiceSort(t *testing.T) {
 		t.Errorf("wanted: %s\ngot: %s\n", want, got)
 	}
 }
+
+func TestDice_Roll(t *testing.T) {
+	tests := []struct {
+		name string
+		d    Dice
+		want RolledDice
+	}{
+		{"1d6", Copy(D6(), 1), RolledDice{{D6(), 5}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.d.Roll(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Dice.Roll() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestRoll(t *testing.T) {
+	type args struct {
+		dice    Dice
+		f       Reroll
+		rerolls int
+	}
+	tests := []struct {
+		name string
+		args args
+		want RolledDice
+	}{
+		{"1d6", args{Copy(D6(), 1), nil, 0}, []RolledDie{{D6(), 1}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Roll(tt.args.dice, tt.args.f, tt.args.rerolls); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Roll() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+*/

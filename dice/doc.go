@@ -19,5 +19,7 @@ Enumeration
 
 If you wish to determine exact results of a die roll, you can enumerate a roll table
 by calling NewTable(DiceToRoll).
+
+TODO: Add options for dice modifiers.
 */
 package dice

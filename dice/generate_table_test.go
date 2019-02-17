@@ -1,5 +1,6 @@
 package dice
 
+/*
 import (
 	"sync"
 	"testing"
@@ -38,3 +39,4 @@ func BenchmarkGenTable(b *testing.B) {
 		wg.Wait()
 	})
 }
+*/

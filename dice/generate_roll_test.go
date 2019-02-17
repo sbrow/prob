@@ -1,5 +1,6 @@
 package dice
 
+/*
 import (
 	"bytes"
 	"io"
@@ -14,12 +15,12 @@ func generateRoll2(prev [][]byte, d Die) [][]byte {
 	var buff bytes.Buffer
 	del := byte(Delim[0])
 	for _, roll := range prev {
-		for _, s := range d.Sides {
+		for _, s := range d.Sides() {
 			buff.Write(roll)
 			if len(roll) != 0 {
 				buff.WriteByte(del)
 			}
-			buff.WriteString(s)
+			buff.WriteString(s.String())
 			buff.WriteByte('\n')
 		}
 	}
@@ -30,12 +31,12 @@ func generateRoll5(prev [][]byte, d Die) [][]byte {
 	var buff bytes.Buffer
 	var nl byte = 0x0a
 	for _, roll := range prev {
-		for _, s := range d.Sides {
+		for _, s := range d.Sides() {
 			buff.Write(roll)
 			if len(roll) != 0 {
 				buff.WriteString(Delim)
 			}
-			buff.WriteString(s)
+			buff.WriteString(s.String())
 			buff.WriteString("\n")
 		}
 	}
@@ -49,12 +50,12 @@ func generateRoll3(prev [][]byte, d Die) [][]byte {
 	del := byte(Delim[0])
 
 	for _, roll := range prev {
-		for _, s := range d.Sides {
+		for _, s := range d.Sides() {
 			buff.Write(roll)
 			if len(roll) != 0 {
-				byt = []byte(s)
+				byt = []byte(s.String())
 			} else {
-				byt = append([]byte{del}, []byte(s)...)
+				byt = append([]byte{del}, []byte(s.String())...)
 			}
 			buff.Write(append(byt, nl))
 		}
@@ -65,11 +66,11 @@ func generateRoll3(prev [][]byte, d Die) [][]byte {
 func generateRoll4(prev *[][]byte, d Die) {
 	del := byte(Delim[0])
 	for _, roll := range *prev {
-		for _, s := range d.Sides {
+		for _, s := range d.Sides() {
 			if len(roll) != 0 {
 				roll = append(roll, del)
 			}
-			roll = append(roll, []byte(s)...)
+			roll = append(roll, []byte(s.String())...)
 			roll = append(roll, '\n')
 		}
 	}
@@ -90,8 +91,8 @@ func generateRoll6(prev bytes.Buffer, d Die) bytes.Buffer {
 		if err == io.EOF && length > 0 {
 			break
 		}
-		wg.Add(len(d.Sides))
-		for _, s := range d.Sides {
+		wg.Add(len(d.Sides()))
+		for _, s := range d.Sides() {
 			go func(data []byte, side string) {
 				defer wg.Done()
 				// Only add the delimiter if
@@ -102,7 +103,7 @@ func generateRoll6(prev bytes.Buffer, d Die) bytes.Buffer {
 				}
 				out.WriteString(side)
 				out.WriteByte('\n')
-			}(line, s)
+			}(line, s.String())
 		}
 		wg.Wait()
 	}
@@ -167,3 +168,4 @@ func BenchmarkGenRoll(b *testing.B) {
 		}
 	})
 }
+*/
