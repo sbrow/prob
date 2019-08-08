@@ -10,9 +10,7 @@ type DeckOdds struct {
 
 func NewDeckOdds(deck *PlayingCardDeck) *DeckOdds {
 	odds := &DeckOdds{
-		deck:    deck,
-		success: 1,
-		total:   1,
+		deck: deck,
 	}
 	odds.deck = deck
 	odds.deck.odds = odds
@@ -30,6 +28,7 @@ func (d *DeckOdds) Draw(hands ...Hander) (odds DeckOdds, err error) {
 	newDeck := *d.deck
 	odds = *NewDeckOdds(&newDeck)
 
+	success, total := 1, 1
 	for _, h := range hands {
 		hand := h.Hand()
 		// get number of successful combos for each hand.
@@ -38,13 +37,15 @@ func (d *DeckOdds) Draw(hands ...Hander) (odds DeckOdds, err error) {
 			if !ok {
 				return *d, &MissingCardError{card}
 			}
-			odds.success *= cards
+			success *= cards
 		}
-		odds.total *= combin.NCR(false, odds.deck.Size(), hand.Size())
+		total *= combin.NCR(false, odds.deck.Size(), hand.Size())
 		if odds.deck, err = odds.deck.Draw(hand); err != nil {
 			return *d, err
 		}
 	}
+	odds.success = success
+	odds.total = total
 
 	return odds, nil
 }
