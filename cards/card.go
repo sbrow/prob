@@ -10,8 +10,8 @@ type PlayingCard struct {
 
 // Hand returns the Card as a Hand interface.
 func (p PlayingCard) Hand() (hand Hand) {
-	hand = make(map[string]int)
-	hand[p.String()] = 1
+	hand = make(map[PlayingCard]int)
+	hand[p] = 1
 	return hand
 }
 
