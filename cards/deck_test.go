@@ -62,7 +62,7 @@ func TestNew(t *testing.T) {
 		{"A", "s"},
 	}
 	for _, tt := range tests {
-		gotDeck := New()
+		gotDeck := *New()
 		t.Run(fmt.Sprintf("containsOne(%s)", tt.String()), func(t *testing.T) {
 			if got, ok := gotDeck.cards[tt]; !ok {
 				t.Errorf(`New() does not contain "%s"`, tt)
@@ -81,24 +81,27 @@ func TestNew(t *testing.T) {
 }
 
 func TestPlayingCardDeck_Remove(t *testing.T) {
-	//type args struct { card PlayingCard }
 	tests := []struct {
 		name    string
 		p       PlayingCardDeck
 		args    []PlayingCard
-		want    PlayingCardDeck
+		want    *PlayingCardDeck
 		wantErr bool
 	}{
-		{"removesOneCard", *New(), []PlayingCard{{"A", "s"}}, *New(), false},
-		{"removesMultipleCards", *New(), []PlayingCard{{"A", "s"}, {"Q", "d"}}, *New(), false},
+		{"removesOneCard", *New(), []PlayingCard{{"A", "s"}}, New(), false},
+		{"removesMultipleCards", *New(), []PlayingCard{{"A", "s"}, {"Q", "d"}}, New(), false},
+		{"removesZeroCards", *New(), []PlayingCard{}, New(), false},
 	}
+	delete(tests[0].want.cards, PlayingCard{"A", "s"})
+	delete(tests[1].want.cards, PlayingCard{"A", "s"})
+	delete(tests[1].want.cards, PlayingCard{"Q", "d"})
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := tt.p.Remove(tt.args...)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PlayingCardDeck.Draw() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("PlayingCardDeck.Remove(%v) = %v, want %v", tt.args, got, tt.want)
 			}
 			for _, card := range tt.args {
@@ -132,6 +135,37 @@ func TestPlayingCardDeck_Size(t *testing.T) {
 			}
 			if got := p.Size(); got != tt.want {
 				t.Errorf("PlayingCardDeck.Size() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPlayingCardDeck_Draw(t *testing.T) {
+	type args struct {
+		hands []Hander
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantDeck *PlayingCardDeck
+		wantErr  bool
+	}{
+		// TODO: Add test cases.
+		{"RemovesPlayingCard", args{[]Hander{PlayingCard{"A", "s"}}}, New(), false},
+		{"RemovesHand", args{[]Hander{Hand{{"A", "s"}: 1}}}, New(), false},
+	}
+	delete(tests[0].wantDeck.cards, PlayingCard{"A", "s"})
+	delete(tests[1].wantDeck.cards, PlayingCard{"A", "s"})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := New()
+			gotDeck, err := p.Draw(tt.args.hands...)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PlayingCardDeck.Draw() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotDeck, tt.wantDeck) {
+				t.Errorf("PlayingCardDeck.Draw() = %v, want %v", gotDeck, tt.wantDeck)
 			}
 		})
 	}

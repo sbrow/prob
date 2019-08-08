@@ -33,21 +33,31 @@ func (m *MissingCardError) Error() string {
 }
 
 // Draw removes hands from the deck.
-func (p PlayingCardDeck) Draw(hands ...Hander) (*PlayingCardDeck, error) {
+func (p PlayingCardDeck) Draw(hands ...Hander) (deck *PlayingCardDeck, err error) {
+	deck, _ = p.Remove()
 	for _, hand := range hands {
 		switch v := hand.(type) {
 		case PlayingCard:
-			if deck, err := p.Remove(v); err != nil {
+			if deck, err = p.Remove(v); err != nil {
 				return nil, &MissingCardError{v}
 			} else {
 				return deck, nil
 			}
+		case Hand:
+			for card, count := range v {
+				cards := make([]PlayingCard, count)
+				for i, _ := range cards {
+					cards[i] = card
+				}
+				if deck, err = deck.Remove(cards...); err != nil {
+					return nil, &MissingCardError{card}
+				}
+			}
 		default:
-			// TODO(sbrow): Implement.
+			panic(v)
 		}
 	}
-	deck := p
-	return &deck, nil
+	return deck, nil
 }
 
 // Remove removes cards from the deck.
