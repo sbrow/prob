@@ -109,3 +109,30 @@ func TestPlayingCardDeck_Remove(t *testing.T) {
 		})
 	}
 }
+
+func TestPlayingCardDeck_Size(t *testing.T) {
+	deck2, _ := New().Draw(PlayingCard{"A", "s"})
+	type fields struct {
+		cards map[PlayingCard]int
+		odds  *DeckOdds
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		{"", fields{cards: New().cards}, 52},
+		{"", fields{cards: deck2.cards}, 51},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &PlayingCardDeck{
+				cards: tt.fields.cards,
+				odds:  tt.fields.odds,
+			}
+			if got := p.Size(); got != tt.want {
+				t.Errorf("PlayingCardDeck.Size() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

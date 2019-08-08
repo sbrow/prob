@@ -64,3 +64,11 @@ func (p PlayingCardDeck) Remove(cards ...PlayingCard) (*PlayingCardDeck, error) 
 
 	return &deck, nil
 }
+
+func (p *PlayingCardDeck) Size() int {
+	sum := 0
+	for _, copies := range p.cards {
+		sum += copies
+	}
+	return sum
+}
