@@ -6,21 +6,21 @@ import (
 
 type PlayingCardDeck struct {
 	cards map[PlayingCard]int
+	odds  *DeckOdds
 }
 
 // New returns a new deck of PlayingCards.
 func New() (deck *PlayingCardDeck) {
+	deck = &PlayingCardDeck{cards: make(map[PlayingCard]int)}
+	deck.odds = NewDeckOdds(deck)
 	suits := []Suit{Clubs, Diamonds, Hearts, Spades}
 	values := []FaceValue{Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace}
 
-	cards := make(map[PlayingCard]int)
-
 	for _, suit := range suits {
 		for _, value := range values {
-			cards[PlayingCard{value, suit}] = 1
+			deck.cards[PlayingCard{value, suit}] = 1
 		}
 	}
-	deck.cards = cards
 	return deck
 }
 
