@@ -21,7 +21,7 @@ func TestDeckOdds_Draw(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v", tt.args.hands), func(t *testing.T) {
-			d := NewDeckOdds(New())
+			d := newDeckOdds(New())
 			gotOdds, err := d.Draw(tt.args.hands...)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeckOdds.Draw() error = %v, wantErr %v", err, tt.wantErr)

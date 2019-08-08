@@ -12,7 +12,7 @@ type PlayingCardDeck struct {
 // New returns a new deck of PlayingCards.
 func New() (deck *PlayingCardDeck) {
 	deck = &PlayingCardDeck{cards: make(map[PlayingCard]int)}
-	deck.odds = NewDeckOdds(deck)
+	deck.odds = newDeckOdds(deck)
 	suits := []Suit{Clubs, Diamonds, Hearts, Spades}
 	values := []FaceValue{Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace}
 
