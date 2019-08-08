@@ -8,7 +8,7 @@ type DeckOdds struct {
 	total   int
 }
 
-func NewDeckOdds(deck *PlayingCardDeck) *DeckOdds {
+func newDeckOdds(deck *PlayingCardDeck) *DeckOdds {
 	odds := &DeckOdds{
 		deck: deck,
 	}
@@ -26,7 +26,7 @@ func NewDeckOdds(deck *PlayingCardDeck) *DeckOdds {
 // TODO(sbrow): Convert card into ...Hands
 func (d *DeckOdds) Draw(hands ...Hander) (odds DeckOdds, err error) {
 	newDeck := *d.deck
-	odds = *NewDeckOdds(&newDeck)
+	odds = *newDeckOdds(&newDeck)
 
 	success, total := 1, 1
 	for _, h := range hands {
