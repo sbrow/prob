@@ -116,7 +116,7 @@ func (s *Set) Size() int {
 // (without replacement).
 func CombineSets(sets ...Set) *Set {
 	for len(sets) > 1 {
-		sets = append([]Set{*combineSets(sets[0], sets[1])}, sets[2:]...)
+		sets = append([]Set{*combineTwoSets(sets[0], sets[1])}, sets[2:]...)
 	}
 	ret := sets[0]
 	return &ret
