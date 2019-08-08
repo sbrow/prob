@@ -23,7 +23,6 @@ func newDeckOdds(deck *PlayingCardDeck) *DeckOdds {
 // A:
 //  - The odds of drawing "Ah"
 //  - A copy of the deck minus "Ah"
-// TODO(sbrow): Convert card into ...Hands
 func (d *DeckOdds) Draw(hands ...Hander) (odds DeckOdds, err error) {
 	newDeck := *d.deck
 	odds = *newDeckOdds(&newDeck)
@@ -31,13 +30,16 @@ func (d *DeckOdds) Draw(hands ...Hander) (odds DeckOdds, err error) {
 	success, total := 1, 1
 	for _, h := range hands {
 		hand := h.Hand()
+
 		// get number of successful combos for each hand.
-		for card, _ := range hand {
+		for card, count := range hand {
+			// TODO(sbrow): if query -> for each card in query LOOP
 			cards, ok := odds.deck.cards[card]
 			if !ok {
 				return *d, &MissingCardError{card}
 			}
-			success *= cards
+			// end LOOP
+			success *= combin.NCR(false, cards, count)
 		}
 		total *= combin.NCR(false, odds.deck.Size(), hand.Size())
 		if odds.deck, err = odds.deck.Draw(hand); err != nil {
