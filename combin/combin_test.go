@@ -39,28 +39,6 @@ func TestCombine(t *testing.T) {
 	}
 }
 
-func TestCombineSets(t *testing.T) {
-	combineSetTests := []struct {
-		name  string
-		left  *Set
-		right *Set
-		out   string
-	}{
-		{"{a, b} X {c, d}", NewSet("a", "b"), NewSet("c", "d"), "a,c\na,d\nb,c\nb,d\n"},
-		{"{{a, b}} X {c}", NewSet([]string{"a", "b"}), NewSet("c"), "a,b,c\n"},
-		{"[]byte{c, d} X {e, f}", NewSet([]byte{99, 100}), NewSet("e", "f"), "99,100,e\n99,100,f\n"},
-		{"{a, b} X {1}", NewSet("a", "b"), NewSet(1), "a,1\nb,1\n"},
-	}
-	for _, tt := range combineSetTests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := CombineSets(*tt.left, *tt.right)
-			if fmt.Sprint(got) != tt.out {
-				t.Errorf("wanted: %s\ngot: %v", tt.out, got)
-			}
-		})
-	}
-}
-
 func TestRNG(t *testing.T) {
 	want := []int{3}
 	got := rng(3, 3)

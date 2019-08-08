@@ -112,9 +112,19 @@ func (s *Set) Size() int {
 	return len(*s)
 }
 
-// CombineSets returns all combinations (without replacement)
-// of the items in set a with the items in set b.
-func CombineSets(a, b Set) *Set {
+// CombineSets returns all combinations of all the given sets
+// (without replacement).
+func CombineSets(sets ...Set) *Set {
+	for len(sets) > 1 {
+		sets = append([]Set{*combineSets(sets[0], sets[1])}, sets[2:]...)
+	}
+	ret := sets[0]
+	return &ret
+}
+
+// combineTwoSets returns all combinations (without replacement)
+// of sets a and b.
+func combineTwoSets(a, b Set) *Set {
 	combos := make([]Combo, a.Size()*b.Size())
 	i := 0
 	for _, aa := range a {
